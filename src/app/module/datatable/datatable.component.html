@@ -1,0 +1,153 @@
+<div class="row mt-5 mb-5 mr-1 ml-1">
+  <div class="col">
+    <p-table #dt [columns]="selectedColumns" [value]="compositions" [paginator]="true" [rows]="10" [autoLayout]="true">
+      <ng-template pTemplate="caption">
+        <div style="text-align: right">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')"
+            style="width:auto">
+        </div>
+        <div style="text-align:right">
+          <p-multiSelect [options]="cols" optionLabel="header" [(ngModel)]="selectedColumns"></p-multiSelect>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+            {{col.header}}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of columns" [ngSwitch]="col.field">
+            <div *ngIf="col.field === 'catagory'">
+              <p-multiSelect defaultLabel="All"  [style]="{width: '100%'}" [options]="catagories" (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
+            </div>
+            <div *ngIf="col.field !== 'catagory'">
+              <input pInputText type="text" (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
+            </div>
+
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData">
+          <td *ngFor="let col of columns">
+            {{rowData[col.field]}}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+
+
+
+<!-- 
+<p-dialog header="Composition" [(visible)]="displayDialog" [responsive]="false" [width]="600" showEffect="fade" [modal]="true">
+  <div class="ui-grid ui-grid-responsive ui-fluid">
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="catagory">Catagory</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" pInputText id="catagory" [(ngModel)]="comp.catagory" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="libraryNumber">Library Number</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" pInputText id="libraryNumber" [(ngModel)]="comp.libraryNumber" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="title">Title</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" [pKeyFilter]="blockSpecial" pInputText id="title" [(ngModel)]="comp.title"
+        />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="ensemble">Ensemble</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" [pKeyFilter]="blockSpecial" pInputText id="ensembe" [(ngModel)]="comp.ensemble"
+        />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="composer">Composer</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" [pKeyFilter]="blockSpecial" pInputText id="composer" [(ngModel)]="comp.composer"
+        />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="arranger">Arranger</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" [pKeyFilter]="blockSpecial" pInputText id="arranger" [(ngModel)]="comp.arranger"
+        />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="composer">Copyright</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" pInputText id="copyright" [(ngModel)]="comp.copyright" />
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="notes">Notes</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <textarea [disabled]="!isUserAuthenticated()" [pKeyFilter]="blockSpecial" pInputTextarea [(ngModel)]="comp.notes"></textarea>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="url">URL</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" [pKeyFilter]="blockSpecial" pInputText [(ngModel)]="comp.url" />
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="lastEdit">Last Edit</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" pInputText [(ngModel)]="comp.lastEdit" />
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label for="editedBy">Edited By</label>
+      </div>
+      <div class="ui-grid-col-9">
+        <input [disabled]="!isUserAuthenticated()" pInputText [(ngModel)]="comp.editedBy" />
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <span>
+        <button type="button" pButton icon="fas fa-trash" (click)="delete()" label="Delete"></button>
+      </span>
+      <button type="button" pButton icon="fa-check" (click)="save()" label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog> -->
