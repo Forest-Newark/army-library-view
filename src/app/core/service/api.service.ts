@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Composition } from '../model/composition';
+import  { Resource} from '../model/resource';
 
 
 @Injectable()
@@ -20,8 +21,14 @@ export class ApiService {
         return this.http.get<Composition[]>(this.apiUrl + '/composition/getAll');
     }
 
-    //UTILITY
 
+    //Resource
+    //Get All
+    getAllResources(): Observable<Resource[]> {
+        return this.http.get<Resource[]>(this.apiUrl + '/resource/getAll' )
+    }
+
+    //UTILITY
     //Get All Catagories
     getAllCatagories():Observable<string[]> {
         return  this.http.get<string[]>(this.apiUrl + 'composition/util/catagory')

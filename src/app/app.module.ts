@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 
@@ -11,6 +12,7 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from '../app/core/componet/navbar/navbar.component';
 import { DatatableComponent } from '../app/module/datatable/datatable.component';
 import { AdminComponent } from '../app/module/admin/admin.component';
+import { ResourcesComponent } from '../app/module/resources/resources.component';
 
 // App Services
 import { ApiService } from '../app/core/service/api.service';
@@ -22,16 +24,19 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     AdminComponent,
-    DatatableComponent
+    DatatableComponent,
+    ResourcesComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpModule,
     MenubarModule,
@@ -40,6 +45,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
     TableModule,
     DropdownModule,
     MultiSelectModule,
+    DialogModule,
     NgbModule.forRoot(),
     AppRoutingModule
   ],
