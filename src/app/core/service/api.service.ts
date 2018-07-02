@@ -28,6 +28,14 @@ export class ApiService {
         return this.http.get<Resource[]>(this.apiUrl + '/resource/getAll' )
     }
 
+    createOrUpdateResource(resource: Resource): Observable<Resource> {
+        return this.http.post<Resource>(this.apiUrl + '/resource/createOrUpdate', resource);
+    }
+
+    deleteResource(resource: Resource): Observable<Resource> {
+        return this.http.post<Resource>(this.apiUrl + '/resource/delete', resource)
+    }
+
     //UTILITY
     //Get All Catagories
     getAllCatagories():Observable<string[]> {

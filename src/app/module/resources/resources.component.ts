@@ -3,7 +3,7 @@ import { Composition } from '../../core/model/composition';
 import { ApiService } from '../../core/service/api.service';
 import { Resource } from '../../core/model/resource';
 import { SelectItem } from 'primeng/api';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-resources',
@@ -22,40 +22,72 @@ export class ResourcesComponent implements OnInit {
 
     cols: any[];
 
-    constructor(private apiService: ApiService, private modalService: NgbModal){}
+    constructor(private apiService: ApiService, private modalService: NgbModal) { }
 
-    resources:Resource[];
+    resources: Resource[];
 
     ngOnInit() {
 
         this.cols = [
             { field: 'title', header: 'Title' },
-            { field: 'instrument', header: 'instrument(s)' },
-            { field: 'ensemble', header: 'Ensemble' },
+            { field: 'instrument', header: 'Instrument' },
+            { field: 'ensemble', header: 'Ensemble/Category' },
             { field: 'location', header: 'Location' },
             { field: 'notes', header: 'Notes' }
         ];
 
 
         this.apiService.getAllResources().subscribe(
-            data => {this.resources =  data},
-            error => {console.log(error)}
+            data => { this.resources = data },
+            error => { console.log(error) }
         )
-     }
+    }
 
 
-     showDialogToAdd() {
+    showDialogToAdd() {
         this.newResource = true;
         this.resource = new Resource();
         this.displayDialog = true;
     }
 
+    subscribeToData() {
+        this.apiService.getAllResources().subscribe(
+            data => { this.resources = data },
+            error => { console.log(error) }
+        )
+    }
+
     save() {
+
+        this.apiService.createOrUpdateResource(this.resource).subscribe(
+            data => {
+                console.log(data);
+                this.displayDialog = false;
+                this.subscribeToData();
+            },
+            error => {
+                console.log(error);
+                this.displayDialog = false;
+                this.subscribeToData();
+            }
+        )
 
     }
 
     delete() {
 
+        this.apiService.deleteResource(this.resource).subscribe(
+            data => {
+                console.log(data);
+                this.displayDialog = false;
+                this.subscribeToData();
+            },
+            error => {
+                console.log(error);
+                this.displayDialog = false;
+                this.subscribeToData();
+            }
+        )
     }
 
     onRowSelect(event) {
