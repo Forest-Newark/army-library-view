@@ -15,7 +15,7 @@
           <div class="input-group-addon" style="width: 2.6rem">
             <i class="fa fa-at"></i>
           </div>
-          <p-dropdown optionLabel="name" appendTo="body" [options]="users" [style]="{'min-width':'100%'}" [(ngModel)]="userName" [ngModelOptions]="{standalone: true}"></p-dropdown>
+          <p-dropdown appendTo="body" [options]="users" [style]="{'min-width':'100%'}" [(ngModel)]="userName" [ngModelOptions]="{standalone: true}"></p-dropdown>
         </div>
       </div>
     </div>
@@ -64,16 +64,27 @@
   </div>
 </div>
 
+<p-growl life="1500" [(value)]="msgs"></p-growl>
 
+<app-datatable [isUserAuthenticated]="isUserAuthenticated" [userName]="userName" *ngIf="isUserAuthenticated"></app-datatable>
 
-<app-datatable [isUserAuthenticated]="isUserAuthenticated" *ngIf="isUserAuthenticated"></app-datatable>
+<hr *ngIf="isUserAuthenticated">
+<div *ngIf="isUserAuthenticated" class="row text-center">
+  <div class="col-6 mx-auto text-center">
+    <p>To Backup Library</p>
+    <p>Select All Columns and hit "Export CSV"</p>
+  </div>
+</div>
+<hr *ngIf="isUserAuthenticated">
 <hr *ngIf="isUserAuthenticated">
 <div *ngIf="isUserAuthenticated" class="row text-center">
   <div class="col-6 mx-auto text-center">
     <p>Upload Library CSV</p>
     <p>*Warning* Overwrites existing Database</p>
-    <!-- <p-fileUpload name="myfile[]"  (uploadHandler)="myUploader($event)"></p-fileUpload> -->
-    <p-fileUpload #fubauto name="myfile[]" mode="basic" customUpload="true"  (uploadHandler)="myUploader($event)" auto="true" chooseLabel="Browse"></p-fileUpload>
+    <p>Please ensure you are restoring from correct backup file before proceding</p>
+
+    <p-fileUpload #fubauto name="myfile[]" mode="basic" customUpload="true" (uploadHandler)="myUploader($event)" auto="true"
+      chooseLabel="Browse"></p-fileUpload>
   </div>
 </div>
 <hr *ngIf="isUserAuthenticated">

@@ -8,6 +8,8 @@
   </div>
 </div>
 
+<p-growl life="1500" [(value)]="msgs"></p-growl>
+
 <div class="row mb-5 mr-1 ml-1">
   <div class="col">
     <p-table #dt [columns]="selectedColumns" selectionMode="single" [(selection)]="composition" (onRowSelect)="onRowSelect($event)"
@@ -24,8 +26,10 @@
           </div>
         </div>
         <div class="ui-helper-clearfix">
+          <button *ngIf="isUserAuthenticated" type="button" pButton label="Add Composition" (click)="addComposition()" style="float:left"></button>
           <button type="button" pButton label="Export CSV" (click)="dt.exportCSV()" style="float:right"></button>
         </div>
+
       </ng-template>
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -39,7 +43,10 @@
             <div *ngIf="col.field === 'catagory'">
               <p-multiSelect defaultLabel="All" [style]="{width: '100%'}" [options]="catagories" (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
             </div>
-            <div *ngIf="col.field !== 'catagory'">
+            <div *ngIf="col.field === 'libraryNumber'">
+              <input pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')">
+            </div>
+            <div *ngIf="col.field !== 'catagory' && col.field !== 'libraryNumber'">
               <input pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')">
             </div>
 
@@ -68,12 +75,14 @@
     <div class="row">
       <div class="col">
         <p>Catagory</p>
-        <input [disabled] ="!isUserAuthenticated" pInputText id="Catagory" style="min-width:100%" [(ngModel)]="composition.catagory" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="Catagory" style="min-width:100%" [(ngModel)]="composition.catagory"
+        />
       </div>
 
       <div class="col">
         <p>Number</p>
-        <input [disabled] ="!isUserAuthenticated" pInputText id="libraryNumber" style="min-width:100%" [(ngModel)]="composition.libraryNumber" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="libraryNumber" style="min-width:100%" [(ngModel)]="composition.libraryNumber"
+        />
       </div>
     </div>
 
@@ -84,7 +93,7 @@
         <p>Title</p>
       </div>
       <div class="col-9">
-        <input [disabled] ="!isUserAuthenticated" pInputText id="title" style="min-width:100%" [(ngModel)]="composition.title" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="title" style="min-width:100%" [(ngModel)]="composition.title" />
       </div>
     </div>
 
@@ -94,7 +103,8 @@
         <p>Composer</p>
       </div>
       <div class="col-9">
-        <input [disabled] ="!isUserAuthenticated" pInputText id="title" style="min-width:100%" [(ngModel)]="composition.composer" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="composer" style="min-width:100%" [(ngModel)]="composition.composer"
+        />
       </div>
     </div>
 
@@ -104,7 +114,8 @@
         <p>Arranger</p>
       </div>
       <div class="col-9">
-        <input [disabled] ="!isUserAuthenticated" pInputText id="title" style="min-width:100%" [(ngModel)]="composition.arranger" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="arranger" style="min-width:100%" [(ngModel)]="composition.arranger"
+        />
       </div>
     </div>
 
@@ -113,7 +124,8 @@
         <p>Ensemble</p>
       </div>
       <div class="col-9">
-        <input [disabled] ="!isUserAuthenticated" pInputText id="title" style="min-width:100%" [(ngModel)]="composition.ensemble" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="ensemble" style="min-width:100%" [(ngModel)]="composition.ensemble"
+        />
       </div>
     </div>
 
@@ -122,7 +134,7 @@
         <p>URL</p>
       </div>
       <div class="col-9">
-        <input [disabled] ="!isUserAuthenticated" pInputText id="title" style="min-width:100%" [(ngModel)]="composition.url" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="url" style="min-width:100%" [(ngModel)]="composition.url" />
       </div>
     </div>
 
@@ -131,7 +143,7 @@
         <p>Notes</p>
       </div>
       <div class="col-9">
-        <textarea [disabled] ="!isUserAuthenticated" pInputTextarea style="min-width:100%" [(ngModel)]="composition.notes"></textarea>
+        <textarea [disabled]="!isUserAuthenticated" pInputTextarea style="min-width:100%" [(ngModel)]="composition.notes"></textarea>
       </div>
     </div>
 
@@ -140,7 +152,8 @@
         <p>Copyright</p>
       </div>
       <div class="col-9">
-        <input [disabled] ="!isUserAuthenticated" pInputText id="title" style="min-width:100%" [(ngModel)]="composition.copyright" />
+        <input [disabled]="!isUserAuthenticated" pInputText id="copyright" style="min-width:100%" [(ngModel)]="composition.copyright"
+        />
       </div>
     </div>
     <hr>
@@ -148,15 +161,22 @@
     <div class="row">
       <div class="col">
         <p>Last Edited</p>
-        <input disabled="disabled" pInputText id="Catagory" style="min-width:100%" [(ngModel)]="composition.lastEdit" />
+        <input disabled="disabled" pInputText id="lastEdit" style="min-width:100%" [(ngModel)]="composition.lastEdit" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <p>Edited By</p>
+        <input disabled="disabled" pInputText id="editedBy" style="min-width:100%" [(ngModel)]="composition.editedBy" />
       </div>
     </div>
 
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" pButton (click)="delete()" class="ui-button-danger" label="Delete"></button>
-      <button type="button" pButton (click)="save()" class="ui-button-success" label="Save"></button>
+      <button *ngIf="isUserAuthenticated" type="button" pButton (click)="delete()" class="ui-button-danger" label="Delete"></button>
+      <button *ngIf="isUserAuthenticated" type="button" pButton (click)="save()" class="ui-button-success" label="Save"></button>
+      <button type="button" pButton (click)="save()" class="ui-button-secondary" label="Close"></button>
     </div>
   </p-footer>
 </p-dialog>

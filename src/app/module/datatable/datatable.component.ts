@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Composition } from '../../core/model/composition';
 import { ApiService } from '../../core/service/api.service';
 import { SelectItem } from 'primeng/api';
+import { Message } from 'primeng/api';
+
 
 @Component({
   selector: 'app-datatable',
@@ -9,6 +11,8 @@ import { SelectItem } from 'primeng/api';
   styleUrls: ['./datatable.component.css']
 })
 export class DatatableComponent implements OnInit {
+
+  msgs: Message[] = [];
 
   compositions: Composition[];
 
@@ -20,12 +24,17 @@ export class DatatableComponent implements OnInit {
   selectedColumns: any[];
   catagories: SelectItem[];
 
-  isUserAuthenticated:boolean = false;
-  
+  isUserAuthenticated: boolean = false;
+  userName: string;
+
   @Input('isUserAuthenticated')
   set _isUserAuthenticated(value: boolean) {
     this.isUserAuthenticated = value;
-    console.log('value::' + value)
+  }
+
+  @Input('userName')
+  set _userName(value: string) {
+    this.userName = value;
   }
 
   constructor(private apiService: ApiService) { }
@@ -48,7 +57,7 @@ export class DatatableComponent implements OnInit {
     ];
 
     this.defaultcols = [
-      { field: 'catagory', header: 'Category' },
+      { field: 'catagory', heade: 'Category' },
       { field: 'libraryNumber', header: 'Library Number' },
       { field: 'title', header: 'Title' },
       { field: 'composer', header: 'Composer' },
@@ -60,13 +69,16 @@ export class DatatableComponent implements OnInit {
     this.apiService.getAllCatagories().subscribe(
       data => {
         this.processCatagories(data);
-        console.log(data);
       },
       error => {
         console.log(error);
       }
     )
+    this.subscribeToCompositionData();
 
+  }
+
+  subscribeToCompositionData(){
     this.apiService.getAllCompositions().subscribe(
       data => {
         this.compositions = data;
@@ -79,14 +91,53 @@ export class DatatableComponent implements OnInit {
 
   processCatagories(catagories: string[]): void {
     catagories.forEach(element => {
-      this.catagories.push( {label:element, value:element},)
+      this.catagories.push({ label: element, value: element }, )
     });
 
   }
 
   onRowSelect(event) {
     this.displayDialog = true;
-}
+  }
+
+  addComposition(){
+    this.composition = new Composition();
+    this.composition.editedBy = this.userName;
+    this.displayDialog = true;
+  }
+
+  save() {
+    this.composition.editedBy = this.userName;
+    this.apiService.saveOrUpdateComposition(this.composition).subscribe(
+      data => {
+        this.displayDialog = false;
+        this.msgs = [];
+        this.msgs.push({ severity: 'success', summary: 'Composition Saved' });
+        this.subscribeToCompositionData();
+      },
+      error => {
+        this.displayDialog = false;
+        this.msgs.push({ severity: 'error', summary: 'Something went wrong' });
+      }
+    )
+  }
+
+  delete() {
+    this.apiService.deleteComposition(this.composition).subscribe(
+      data => {
+        this.displayDialog = false;
+        this.msgs = [];
+        this.msgs.push({ severity: 'warn', summary: 'Composition Deleted' });
+        this.subscribeToCompositionData();
+      },
+      error => {
+        this.displayDialog = false;
+        this.msgs.push({ severity: 'error', summary: 'Something went wrong' });
+      }
+    )
+  }
+
+
 
 
 

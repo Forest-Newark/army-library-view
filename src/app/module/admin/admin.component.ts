@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Composition } from '../../core/model/composition';
 import { SelectItem } from 'primeng/api';
 import { ApiService } from '../../core/service/api.service';
+import {Message} from 'primeng/api';
 
 @Component({
   selector: 'admin-component',
@@ -10,10 +11,12 @@ import { ApiService } from '../../core/service/api.service';
 })
 export class AdminComponent implements OnInit {
 
+  msgs: Message[] = [];
+
   userName: string;
   password: string;
   isUserAuthenticated: boolean = false;
-  users: any[];
+  users: SelectItem[];
   loginError: boolean = false;
   loginMessage:string;
 
@@ -25,11 +28,11 @@ export class AdminComponent implements OnInit {
   ngOnInit() {
 
     this.users = [
-      { name: 'Select User', value: null },
-      { name: 'Forest Newark (SGT)', value: 'Forest Newark (SGT)' },
-      { name: 'Paul Laches (SGT)', value: 'Paul Laches (SGT))' },
-      { name: 'Jeff Barnhart (SGT)', value: 'Jeff Barnhart (SGT)' },
-      { name: 'Eric Dowler (SPC)', value: 'Eric Dowler (SPC)' }
+      { label: 'Select User', value: null },
+      { label: 'Forest Newark (SGT)', value: 'Forest Newark (SGT)' },
+      { label: 'Paul Laches (SGT)', value: 'Paul Laches (SGT))' },
+      { label: 'Jeff Barnhart (SGT)', value: 'Jeff Barnhart (SGT)' },
+      { label: 'Eric Dowler (SPC)', value: 'Eric Dowler (SPC)' }
     ];
 
   }
@@ -43,6 +46,7 @@ export class AdminComponent implements OnInit {
 
     if (this.password) {
       if (this.password.includes('246libraryadmin')) {
+        console.log(this.userName);
         this.isUserAuthenticated = true;
         this.isUserAuthenticatedEvent.emit(true);
         this.loginMessage = '';
@@ -59,16 +63,31 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  downloadBackup(){
+    this.apiService.downloadBackup().subscribe(
+      data => {
+
+      },
+      error => {
+        
+      }
+    )
+  }
+
   myUploader(event) {
     let fileList: FileList = event.files;
     if (fileList.length > 0) {
       let file: File = fileList[0];
       let formData: FormData = new FormData();
       formData.append('File', file, file.name);
-      formData.append('userName', 'admin');
+      formData.append('userName', this.userName);
       this.apiService.uploadCSV(formData).subscribe(
-        data => { console.log('success') },
-        error => { console.log(error) }
+        data => { console.log('success');
+        this.msgs = [];
+        this.msgs.push({severity:'success', summary:'File Uploaded!'}); },
+        error => { console.log(error);
+          this.msgs = [];
+          this.msgs.push({severity:'error', summary:'Something Went Wrong'}); }
       )
     }
 

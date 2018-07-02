@@ -25,7 +25,8 @@ import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DialogModule } from 'primeng/dialog';
-import {InputTextareaModule} from 'primeng/inputtextarea';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { GrowlModule } from 'primeng/growl';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
     DropdownModule,
     MultiSelectModule,
     InputTextareaModule,
+    GrowlModule,
     DialogModule,
     NgbModule.forRoot(),
     AppRoutingModule
