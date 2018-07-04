@@ -10,9 +10,18 @@
 <body>
   <app-navbar></app-navbar>
 
-  <div id="body-container">
+  <div *ngIf="!loading" id="body-container">
     <router-outlet></router-outlet>
   </div>
+
+  <div class="text-center"  *ngIf="loading" id="body-container">
+      <hr>
+      <p>Establishing Connection to Data Server...</p>
+      <p-progressSpinner *ngIf="spinner"></p-progressSpinner>
+      <p *ngIf="fail">Unable to contact server. My free server might still be "waking up". Try Refreshing the page</p>
+      <hr>
+  </div>
+
 
 </body>
 
