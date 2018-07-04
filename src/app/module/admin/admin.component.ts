@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Composition } from '../../core/model/composition';
 import { SelectItem } from 'primeng/api';
 import { ApiService } from '../../core/service/api.service';
-import {Message} from 'primeng/api';
+import { Message } from 'primeng/api';
 
 @Component({
   selector: 'admin-component',
@@ -18,7 +18,8 @@ export class AdminComponent implements OnInit {
   isUserAuthenticated: boolean = false;
   users: SelectItem[];
   loginError: boolean = false;
-  loginMessage:string;
+  loginMessage: string;
+  loading: boolean = false;
 
   @Output('isUserAuthenticatedEvent') isUserAuthenticatedEvent = new EventEmitter<boolean>();
 
@@ -38,7 +39,7 @@ export class AdminComponent implements OnInit {
   }
 
   login() {
-    if(!this.userName){
+    if (!this.userName) {
       this.loginError = true;
       this.loginMessage = 'Please select a user';
       return;
@@ -51,8 +52,8 @@ export class AdminComponent implements OnInit {
         this.isUserAuthenticatedEvent.emit(true);
         this.loginMessage = '';
         this.loginError = false;
-        
-      } else{
+
+      } else {
         this.loginError = true;
         this.loginMessage = 'WRONG PASSWORD YOU DUMB FUCK'
       }
@@ -63,18 +64,9 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  downloadBackup(){
-    this.apiService.downloadBackup().subscribe(
-      data => {
-
-      },
-      error => {
-        
-      }
-    )
-  }
 
   myUploader(event) {
+    this.loading = true;
     let fileList: FileList = event.files;
     if (fileList.length > 0) {
       let file: File = fileList[0];
@@ -82,12 +74,16 @@ export class AdminComponent implements OnInit {
       formData.append('File', file, file.name);
       formData.append('userName', this.userName);
       this.apiService.uploadCSV(formData).subscribe(
-        data => { console.log('success');
-        this.msgs = [];
-        this.msgs.push({severity:'success', summary:'File Uploaded!'}); },
-        error => { console.log(error);
+        data => {
+          this.loading = false;
           this.msgs = [];
-          this.msgs.push({severity:'error', summary:'Something Went Wrong'}); }
+          this.msgs.push({ severity: 'success', summary: 'File Uploaded!' });
+        },
+        error => {
+          this.loading = false;;
+          this.msgs = [];
+          this.msgs.push({ severity: 'error', summary: 'Something Went Wrong' });
+        }
       )
     }
 

@@ -13,6 +13,10 @@ export class ApiService {
 
     apiUrl = environment.apiUrl;
 
+    serviceTest() {
+        return this.http.get(this.apiUrl + '/api/servicetest');
+    }
+
 
     //Compositions 
 

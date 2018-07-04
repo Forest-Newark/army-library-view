@@ -27,6 +27,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { GrowlModule } from 'primeng/growl';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { GrowlModule } from 'primeng/growl';
     DropdownModule,
     MultiSelectModule,
     InputTextareaModule,
+    ProgressSpinnerModule,
     GrowlModule,
     DialogModule,
     NgbModule.forRoot(),

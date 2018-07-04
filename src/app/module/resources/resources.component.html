@@ -12,18 +12,21 @@
 <div class="row">
   <div class="col ml-5 mr-5">
 
-    <p-table #dt [columns]="cols" [value]="resources" selectionMode="single" [autoLayout]="true" [(selection)]="selectedResource"
+    <p-table #dt [responsive]="true" [columns]="cols" [value]="resources" selectionMode="single" [autoLayout]="true" [(selection)]="selectedResource"
       (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
       <ng-template pTemplate="caption">
         <div style="text-align:center">
           <p>Resource Table</p>
         </div>
-        <div style="text-align:right">
-          <input type="text" pInputText placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-          <button style="margin-left:25px" type="button" pButton (click)="showDialogToAdd()" label="Add"></button>
-
+        <div class="row">
+          <div class="col mb-2">
+           
+            <button type="button" pButton (click)="showDialogToAdd()" label="Add"></button>
+          </div>
+          <div class="col  mb-2">
+              <input type="text" pInputText placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">  
+          </div>
         </div>
-
       </ng-template>
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -46,7 +49,7 @@
           <td *ngFor="let col of columns">
             <div *ngIf="col.field === 'location'">
 
-              <a href="{{rowData[col.field]}}">Link</a>
+              <a href="{{rowData[col.field]}}" target="_blank">Link</a>
             </div>
             <div *ngIf="col.field !== 'location'">
               {{rowData[col.field]}}
@@ -70,17 +73,17 @@
 
     <div class="row">
       <div class="col-4">
-        <p>Title:</p>
+        <p>Title</p>
       </div>
       <div class="col-8">
-        <input pInputText placeholder="Resource Title" style="min-width:100%" id="Title" [(ngModel)]="resource.title" />
+        <input pInputText  style="min-width:100%" id="Title" [(ngModel)]="resource.title" />
       </div>
     </div>
 
 
     <div class="row">
       <div class="col-4">
-        <p>Instrument:</p>
+        <p>Instrument</p>
       </div>
       <div class="col-8">
         <input pInputText style="min-width:100%" id="Instrument(s)" [(ngModel)]="resource.instrument" />
@@ -99,7 +102,7 @@
 
     <div class="row">
       <div class="col-4">
-        <p>Location</p>
+        <p>Location(URL)</p>
       </div>
       <div class="col-8">
         <input pInputText style="min-width:100%" id="Location" [(ngModel)]="resource.location" />
@@ -108,7 +111,7 @@
 
     <div class="row">
       <div class="col-4">
-        <p>Notes:</p>
+        <p>Notes</p>
       </div>
       <div class="col-8">
 

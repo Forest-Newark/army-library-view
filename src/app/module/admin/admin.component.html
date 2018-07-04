@@ -83,8 +83,14 @@
     <p>*Warning* Overwrites existing Database</p>
     <p>Please ensure you are restoring from correct backup file before proceding</p>
 
-    <p-fileUpload #fubauto name="myfile[]" mode="basic" customUpload="true" (uploadHandler)="myUploader($event)" auto="true"
-      chooseLabel="Browse"></p-fileUpload>
+    <div *ngIf="!loading">
+      <p-fileUpload #fubauto name="myfile[]" mode="basic" customUpload="true" (uploadHandler)="myUploader($event)" auto="true"
+        chooseLabel="Browse"></p-fileUpload>
+    </div>
+
+    <div *ngIf="loading">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
   </div>
 </div>
 <hr *ngIf="isUserAuthenticated">

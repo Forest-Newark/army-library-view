@@ -5,6 +5,7 @@ import { SelectItem } from 'primeng/api';
 import { Message } from 'primeng/api';
 
 
+
 @Component({
   selector: 'app-datatable',
   templateUrl: './datatable.component.html',
@@ -26,6 +27,8 @@ export class DatatableComponent implements OnInit {
 
   isUserAuthenticated: boolean = false;
   userName: string;
+
+  loading: boolean = true;
 
   @Input('isUserAuthenticated')
   set _isUserAuthenticated(value: boolean) {
@@ -57,15 +60,20 @@ export class DatatableComponent implements OnInit {
     ];
 
     this.defaultcols = [
-      { field: 'catagory', heade: 'Category' },
+      { field: 'catagory', header: 'Category' },
       { field: 'libraryNumber', header: 'Library Number' },
       { field: 'title', header: 'Title' },
       { field: 'composer', header: 'Composer' },
       { field: 'ensemble', header: 'Ensemble' }
     ];
     this.selectedColumns = this.defaultcols;
+    this.subscribeToCatagoriesData();
+    this.subscribeToCompositionData();
 
 
+  }
+
+  subscribeToCatagoriesData() {
     this.apiService.getAllCatagories().subscribe(
       data => {
         this.processCatagories(data);
@@ -74,13 +82,14 @@ export class DatatableComponent implements OnInit {
         console.log(error);
       }
     )
-    this.subscribeToCompositionData();
+
 
   }
 
-  subscribeToCompositionData(){
+  subscribeToCompositionData() {
     this.apiService.getAllCompositions().subscribe(
       data => {
+        this.loading = false;
         this.compositions = data;
       },
       error => {
@@ -100,7 +109,7 @@ export class DatatableComponent implements OnInit {
     this.displayDialog = true;
   }
 
-  addComposition(){
+  addComposition() {
     this.composition = new Composition();
     this.composition.editedBy = this.userName;
     this.displayDialog = true;

@@ -11,23 +11,31 @@
 <p-growl life="1500" [(value)]="msgs"></p-growl>
 
 <div class="row mb-5 mr-1 ml-1">
-  <div class="col">
+  <div *ngIf="loading" class="col text-center">
+    <hr>
+    <p>Initializing Data Server...</p>
+    <p>It is free but slow</p>
+    <p-progressSpinner></p-progressSpinner>
+    <hr>
+  </div>
+
+  <div *ngIf="!loading" class="col">
     <p-table #dt [columns]="selectedColumns" selectionMode="single" [(selection)]="composition" (onRowSelect)="onRowSelect($event)"
       [responsive]="true" [value]="compositions" [paginator]="true" [rows]="10" [autoLayout]="true" exportFilename="246-library-export">
       <ng-template pTemplate="caption">
 
         <div class="row">
-          <div class="col text-left">
+          <div class="col-lg-6 col-sm-12 mt-lg-0  ">
             <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header" selectedItemsLabel="{0} columns selected"
-              [style]="{minWidth: '200px'}" defaultLabel="Choose Columns"></p-multiSelect>
+              defaultLabel="Choose Columns"></p-multiSelect>
           </div>
-          <div class="col text-right">
+          <div class="col-lg-6 col-sm-12 mt-lg-0 mt-sm-2 mb-sm-2 ">
             <input type="text" pInputText placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
           </div>
         </div>
-        <div class="ui-helper-clearfix">
+        <div class="ui-helper-clearfix mt-2 mt-sm-2 ">
           <button *ngIf="isUserAuthenticated" type="button" pButton label="Add Composition" (click)="addComposition()" style="float:left"></button>
-          <button type="button" pButton label="Export CSV" (click)="dt.exportCSV()" style="float:right"></button>
+          <button type="button" pButton label="Export CSV" (click)="dt.exportCSV()"></button>
         </div>
 
       </ng-template>
@@ -56,6 +64,7 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr [pSelectableRow]="rowData">
           <td *ngFor="let col of columns">
+            <span class="ui-column-title">{{col.header}}:</span>
             {{rowData[col.field]}}
           </td>
         </tr>
